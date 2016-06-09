@@ -467,4 +467,35 @@ And finally start your service when done with learning:
 Test your remote:
 
 	irw /dev/lircd
+	
+# How to enable serial on the 40 pin header
+
+You need to update the FEX configuration (which is compiled into a .bin) located at /boot/script.bin
+
+Decompile .bin to .fex
+```
+cd /boot
+bin2fex script.bin > custom.fex
+rm script.bin # only removes symbolic link 
+```
+
+Edit .fex file
+```
+[uart3]
+uart_used = 1 # Change from 0 to 1
+uart_port = 3
+uart_type = 2 # In this case we have a 2 pin UART
+uart_tx = port:PA13<3><1><default><default>
+uart_rx = port:PA14<3><1><default><default>
+```
+
+Compile .fex to .bin
+```
+fex2bin custom.fex > script.bin
+```
+
+Reboot
+
+Notice that /dev/ttyS3 appears. That is your new UART device.
+
 ****
